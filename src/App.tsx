@@ -25,6 +25,7 @@ Renuka
 Val
 Dhav
 Nicko
+Pramod
 Chris
 Ruian
 Curt
@@ -44,7 +45,7 @@ Nate`}
 
 
       <div class="card">
-        <button
+        <button style={`display:${availList().length !== 0 ? "block" : "none"}`}
           onClick={() => {
             const sn = document.getElementById('selectedName')
             let anim = ''
@@ -71,20 +72,20 @@ Nate`}
               }, 50)
             }
           }}>
-          { count()%3 === 0 ? 'make an measurment' :  count()%3 === 1 ?  'collapse the wave function': 'observe the quantum state'}
+          { count()%3 === 0 ? 'collapse the wave function Ψ' :  count()%3 === 1 ? 'make an measurment of Ψ': 'observe the quantum state |⟩'}
         </button>
         <div class="name-columns" >
         <div class="name-list">
-          <div>yet to be selected:</div>
+          <div style="color:#999">still in superposition:</div>
             {availList().map((i) => { return <div>{i}</div> })}
           </div>
           <div class="name-list">
-            <div>the one:</div>
+            <div style="color:#999">the one:</div>
             <div>{pName}</div>
           </div>
           
           <div class="name-list">
-            <div>selected in this orded:</div>
+            <div style="color:#999">collapsed in this orded:</div>
             {complete().map((i) => { return <div>{i}</div> })}
           </div>
         </div>

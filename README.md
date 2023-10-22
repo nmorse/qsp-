@@ -1,3 +1,6 @@
+# Ψ QSP of Names Ψ
+A simple app that selects names randomly (via Quantum SuperPosition obviously).
+
 ## Usage
 
 ```bash
