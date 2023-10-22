@@ -24,15 +24,27 @@
   padding: 2em;
 }
 
-/* 
-body {
+.setupform {
   display: flex;
+  flex-direction: row;
+  align-content: center;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #333;
-} */
+  align-items: flex-start;
+}
+
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+    align-content: flex-start;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
 
 .animation-container {
   position: relative;
@@ -53,12 +65,31 @@ body {
   z-index: 999;
 }
 
+.name-columns {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.name-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 12px;
+  border: black solid 1px;
+  margin: 8px;
+}
+
 .animation-none {
-  animation:  none;
+  animation: none;
   animation-fill-mode: forwards;
 }
+
 .animation-select {
-  animation:  4s linear 0s nameAnimationSelect;
+  animation: 1s ease-in nameAnimationSelect;
   animation-fill-mode: forwards;
 }
 
@@ -68,9 +99,10 @@ body {
     /* pushes the sun down past the viewport */
     transform: translateX(0);
   }
+
   to {
     /* returns the sun to its default position */
-    transform: translateX(200px);
+    transform: translateX(400px);
   }
 
 }
@@ -157,6 +189,7 @@ body {
     top: 3px;
     left: 8px;
   }
+
   85% {
     opacity: 0;
     top: 1px;
@@ -189,4 +222,3 @@ body {
     left: 0px;
   }
 }
-
