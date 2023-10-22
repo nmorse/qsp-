@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.solid:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,97 @@
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
+/* 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #333;
+} */
+
+.animation-container {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  padding: 20px;
+}
+
+.name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  color: white;
+  font-size: 2em;
+  z-index: 999;
+}
+
+.animation1 {
+  animation: nameAnimation1 1.03s linear infinite;
+}
+
+@keyframes nameAnimation1 {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
+  }
+}
+
+.animation2 {
+  animation: nameAnimation2 2.14s linear infinite;
+}
+
+@keyframes nameAnimation2 {
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
+  }
+}
+
+.animation3 {
+  animation: nameAnimation3 1.8s linear infinite;
+}
+
+@keyframes nameAnimation3 {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  10% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 0;
+  }
 }
