@@ -32,17 +32,21 @@
   align-items: flex-start;
 }
 
+textarea {
+  height: 144px;
+  width: 224px;
+}
 
 body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
-    align-content: flex-start;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  align-content: flex-start;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 
 
