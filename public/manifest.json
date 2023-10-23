@@ -1,8 +1,8 @@
 {
-    "name": "QSP-of-Names",
-    "short_name": "QSP",
+    "name": "Qantum-Superposition-of-Names",
+    "short_name": "QSN",
     "description": "A random name selector application. A list of names is put in super possition and when you 'collapse the wave function' a name is pulled out and displayed. Replaces the Wheel of Fortune, and having to wait for the wheel to stop spinning.",
-    "start_url": "dist/",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#333",
     "theme_color": "#3367D6",
