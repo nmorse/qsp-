@@ -3,8 +3,8 @@ import './App.css'
 import { createEffect } from 'solid-js';
 import { createStore, Store, SetStoreFunction } from 'solid-js/store';
 
-type ListStore = {
-  list: string[];
+type ListStore = { 
+  [keys: string]: string[];
 };
 
 function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunction<ListStore>] {
@@ -24,7 +24,7 @@ function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunc
 
 
 function App() {
-  const [store, setStore] = createLocalStore({});
+  const [store, setStore] = createLocalStore({ list: [] });
   const [listName, setListName] = createSignal( Object.keys(store)[0] ?? "default-list")
   const [count, setCount] = createSignal(0)
   const [pName, setPName] = createSignal('')
@@ -56,12 +56,12 @@ function App() {
               setListName(k)
               const srcNamesEle = document.getElementById('srcNames')
               if (srcNamesEle) {
-                srcNamesEle.value = store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""
+                (srcNamesEle as HTMLInputElement).value = !!store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""
               }
             }}>{k ? k : "un-named-list"}</button>
 
             <button style="color:red" onClick={() => {
-              setStore(k, undefined)
+              setStore(k, [])
               if (k === listName()) {
                 setListName(Object.keys(store)[0])
               }
@@ -109,12 +109,12 @@ function App() {
               const ri = Math.floor(Math.random() * av.length)
               const randomName = av.slice(ri, ri + 1)[0]
               setPName(() => randomName)
-              setAvailList((o: any[]) => {
+              setAvailList((o) => {
                 const i = (o.findIndex((name) => name === randomName))
                 return o.slice(0, i).concat(o.slice(i + 1))
               })
-              setCount((count: number) => count + 1)
-              setComplete((o: any[]) => o.concat([randomName]))
+              setCount((count) => count + 1)
+              setComplete((o) => o.concat([randomName]))
               setTimeout(() => {
                 if (sn) {
                   sn.style.animation = "1s ease-out nameAnimationSelect"
