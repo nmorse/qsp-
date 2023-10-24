@@ -52,7 +52,12 @@ function App() {
 
       <p style={`display:${gameOver() ? "block" : "none"}`}>Setup a list of names (one name per line), then name the list and click <strong>[new]</strong>. Next click <em>start ...</em></p>
       <div class="setupform" style={`display:${gameOver() ? "flex" : "none"}`}>
-        <textarea id="srcNames" >
+        <textarea id="srcNames" onChange={(e)=>{
+          e.stopPropagation()
+          e.preventDefault()
+          const names = e.target.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
+          setStore(listName(), names)
+        }} >
           {textListFromStore()}
         </textarea>
         <div class="vertical">

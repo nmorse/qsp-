@@ -48,10 +48,11 @@ textarea {
 
 input {
   width: 100px;
+  height: 30px;
 }
 
 button.selected {
-  background-color: darkgrey;
+  background-color: #888;
 }
 
 body {
@@ -69,7 +70,6 @@ body {
 
 .animation-container {
   position: relative;
-  /* overflow: hidden; */
   height: 40px;
   padding: 20px;
   margin: 20px;
@@ -81,7 +81,6 @@ body {
   top: 0;
   left: 0;
   opacity: 1;
-  color: white;
   font-size: 2em;
   z-index: 999;
 }
@@ -117,15 +116,12 @@ body {
 @keyframes nameAnimationSelect {
 
   from {
-    /* pushes the sun down past the viewport */
     transform: translateX(0);
   }
 
   to {
-    /* returns the sun to its default position */
     transform: translateX(400px);
   }
-
 }
 
 .animation1 {
