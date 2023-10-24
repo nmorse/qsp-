@@ -3,8 +3,8 @@ import './App.css'
 import { createEffect } from 'solid-js';
 import { createStore, Store, SetStoreFunction } from 'solid-js/store';
 
-type ListStore = { 
-  [keys: string]: string[];
+type ListStore = {
+  [keys: string]: string[] | undefined;
 };
 
 function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunction<ListStore>] {
@@ -23,14 +23,22 @@ function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunc
 }
 
 
+
 function App() {
-  const [store, setStore] = createLocalStore({ list: [] });
-  const [listName, setListName] = createSignal( Object.keys(store)[0] ?? "default-list")
+  const [store, setStore] = createLocalStore({});
+  const [listName, setListName] = createSignal(Object.keys(store)[0] ?? "default-list")
   const [count, setCount] = createSignal(0)
   const [pName, setPName] = createSignal('')
   const [availList, setAvailList] = createSignal([])
   const [complete, setComplete] = createSignal([])
   const gameOver = () => availList().length === 0 && pName().length === 0
+  const textListFromStore = () => {
+    const listArr = store[listName()]
+    if (typeof listArr === 'object') {
+      return listArr.map((n: string) => `${n}\n`).join('')
+    }
+    return ''
+  }
 
   return (
     <>
@@ -45,25 +53,29 @@ function App() {
       <p style={`display:${gameOver() ? "block" : "none"}`}>Setup a list of names (one name per line), then name the list and click <strong>[new]</strong>. Next click <em>start ...</em></p>
       <div class="setupform" style={`display:${gameOver() ? "flex" : "none"}`}>
         <textarea id="srcNames" >
-          {store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""}
+          {textListFromStore()}
         </textarea>
         <div class="vertical">
           {Object.keys(store).map((k) => <div>
             <button
-            class={k === listName() ? "selected" : ""}
-            value={k ? k : "un-named-list"}
-            onClick={() => {
-              setListName(k)
-              const srcNamesEle = document.getElementById('srcNames')
-              if (srcNamesEle) {
-                (srcNamesEle as HTMLInputElement).value = !!store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""
-              }
-            }}>{k ? k : "un-named-list"}</button>
+              class={k === listName() ? "selected" : ""}
+              value={k ? k : "un-named-list"}
+              onClick={() => {
+                setListName(k)
+                const srcNamesEle = document.getElementById('srcNames')
+                if (srcNamesEle) {
+                  (srcNamesEle as HTMLInputElement).value = textListFromStore()
+                }
+              }}>{k ? k : "un-named-list"}</button>
 
             <button style="color:red" onClick={() => {
-              setStore(k, [])
+              setStore(k, undefined)
               if (k === listName()) {
                 setListName(Object.keys(store)[0])
+                const srcNamesEle = document.getElementById('srcNames')
+                if (srcNamesEle) {
+                  (srcNamesEle as HTMLInputElement).value = textListFromStore()
+                }
               }
             }}
             >
@@ -124,7 +136,7 @@ function App() {
               }, 50)
             }
           }}>
-          {!availList().length ? Math.random() > 0.5 ? "jump to one of man worlds" : "check if quantum cats live forever" : count() % 3 === 0 ? 'collapse the wave function Ψ' : count() % 3 === 1 ? 'make a measurment of Ψ' : 'observe the quantum state |⟩'}
+          {!availList().length ? Math.random() > 0.5 ? "jump to one of many worlds" : "check if quantum cats live forever" : count() % 3 === 0 ? 'collapse the wave function Ψ' : count() % 3 === 1 ? 'make a measurment of Ψ' : 'observe the quantum state |⟩'}
         </button>
         <div class="name-columns" >
           <div class="name-list">
