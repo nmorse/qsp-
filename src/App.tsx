@@ -3,7 +3,7 @@ import './App.css'
 import { createEffect } from 'solid-js';
 import { createStore, Store, SetStoreFunction } from 'solid-js/store';
 
-type ListStore = { 
+type ListStore = {
   list: string[];
 };
 
@@ -24,46 +24,80 @@ function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunc
 
 
 function App() {
-  const [store, setStore] = createLocalStore({ list: [] });
+  const [store, setStore] = createLocalStore({});
+  const [listName, setListName] = createSignal( Object.keys(store)[0] ?? "default-list")
   const [count, setCount] = createSignal(0)
   const [pName, setPName] = createSignal('')
   const [availList, setAvailList] = createSignal([])
   const [complete, setComplete] = createSignal([])
+  const gameOver = () => availList().length === 0 && pName().length === 0
 
   return (
     <>
       <h3>Names in a Quantum Superposition</h3>
       <div class="animation-container">
-        {availList().length ?
-          availList().map((item, i) => { return <h1 class={`name animation${i % 4 + 1}`}>{item}</h1> }) :
+        {!gameOver() ?
+          availList().map((item: any, i: number) => { return <h1 class={`name animation${i % 4 + 1}`}>{item}</h1> }) :
           null}
         <h1 id="selectedName" class={`name animation-select`}>{pName()}</h1>
       </div>
 
-      <p style={`display:${availList().length === 0 ? "block" : "none"}`}>Setup the list of names (one name per line).</p>
-      <div class="setupform" style={`display:${availList().length === 0 ? "flex" : "none"}`}>
+      <p style={`display:${gameOver() ? "block" : "none"}`}>Setup a list of names (one name per line), then name the list and click <strong>[new]</strong>. Next click <em>start ...</em></p>
+      <div class="setupform" style={`display:${gameOver() ? "flex" : "none"}`}>
         <textarea id="srcNames" >
-          {store?.list.map((n:string) => `${n}\n`)}
+          {store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""}
         </textarea>
+        <div class="vertical">
+          {Object.keys(store).map((k) => <div>
+            <button
+            class={k === listName() ? "selected" : ""}
+            value={k ? k : "un-named-list"}
+            onClick={() => {
+              setListName(k)
+              const srcNamesEle = document.getElementById('srcNames')
+              if (srcNamesEle) {
+                srcNamesEle.value = store[listName()] ? store[listName()].map((n: string) => `${n}\n`).join('') : ""
+              }
+            }}>{k ? k : "un-named-list"}</button>
+
+            <button style="color:red" onClick={() => {
+              setStore(k, undefined)
+              if (k === listName()) {
+                setListName(Object.keys(store)[0])
+              }
+            }}
+            >
+              X</button> </div>)}
+
+          <div><input id="newListName" value="" placeholder="name a new list"></input>
+            <button onClick={() => {
+              const newListNameEle: any = document.getElementById('newListName')
+              const namesEle: any = document.getElementById('srcNames')
+              if (newListNameEle && namesEle) {
+                const names = namesEle?.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
+                setStore(newListNameEle.value, names)
+                setListName(newListNameEle.value)
+                newListNameEle.value = ''
+              }
+            }}
+            >new</button></div></div>
         <button
           onClick={() => {
-            const namesEle: any = document.getElementById('srcNames') as any
+            const namesEle: any = document.getElementById('srcNames')
             if (namesEle) {
               const names = namesEle?.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
               setAvailList(names)
-              setStore('list', names)
+              setStore(listName(), names)
               setComplete([])
               setPName('')
             }
           }
-          }>
-          setup
-        </button>
+          }>&gt; start entangling particles &gt;</button>
       </div>
 
 
       <div class="card">
-        <button style={`display:${availList().length !== 0 ? "block" : "none"}`}
+        <button style={`display:${!gameOver() ? "block" : "none"}`}
           onClick={() => {
             const sn = document.getElementById('selectedName')
             if (sn) {
@@ -75,9 +109,12 @@ function App() {
               const ri = Math.floor(Math.random() * av.length)
               const randomName = av.slice(ri, ri + 1)[0]
               setPName(() => randomName)
-              setAvailList((o) => o.filter((i) => i !== randomName))
-              setCount((count) => count + 1)
-              setComplete((o) => o.concat([randomName]))
+              setAvailList((o: any[]) => {
+                const i = (o.findIndex((name) => name === randomName))
+                return o.slice(0, i).concat(o.slice(i + 1))
+              })
+              setCount((count: number) => count + 1)
+              setComplete((o: any[]) => o.concat([randomName]))
               setTimeout(() => {
                 if (sn) {
                   sn.style.animation = "1s ease-out nameAnimationSelect"
@@ -87,12 +124,12 @@ function App() {
               }, 50)
             }
           }}>
-          {count() % 3 === 0 ? 'collapse the wave function Ψ' : count() % 3 === 1 ? 'make an measurment of Ψ' : 'observe the quantum state |⟩'}
+          {!availList().length ? Math.random() > 0.5 ? "jump to one of man worlds" : "check if quantum cats live forever" : count() % 3 === 0 ? 'collapse the wave function Ψ' : count() % 3 === 1 ? 'make a measurment of Ψ' : 'observe the quantum state |⟩'}
         </button>
         <div class="name-columns" >
           <div class="name-list">
             <div style="color:#999">still in superposition:</div>
-            {availList().map((i) => { return <div>{i}</div> })}
+            {availList().map((i: any) => { return <div>{i}</div> })}
           </div>
           <div class="name-list">
             <div style="color:#999">the one:</div>
@@ -100,8 +137,8 @@ function App() {
           </div>
 
           <div class="name-list">
-            <div style="color:#999">collapsed in this orded:</div>
-            {complete().map((i) => { return <div>{i}</div> })}
+            <div style="color:#999">collapsed in this order:</div>
+            {complete().map((i: any) => { return <div>{i}</div> })}
           </div>
         </div>
 
