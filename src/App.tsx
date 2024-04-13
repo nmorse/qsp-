@@ -26,23 +26,26 @@ function createLocalStore(initState: ListStore): [Store<ListStore>, SetStoreFunc
 
 function App() {
   const [store, setStore] = createLocalStore({});
-  const [listName, setListName] = createSignal(Object.keys(store)[0] ?? "default-list")
+  const [newListName, setNewListName] = createSignal('')
+  const [listName, setListName] = createSignal(Object.keys(store)[0] ?? "")
   const [count, setCount] = createSignal(0)
   const [pName, setPName] = createSignal('')
   const [availList, setAvailList] = createSignal([])
   const [complete, setComplete] = createSignal([])
   const gameOver = () => availList().length === 0 && pName().length === 0
   const textListFromStore = () => {
-    const listArr = store[listName()]
-    if (typeof listArr === 'object') {
-      return listArr.map((n: string) => `${n}\n`).join('')
+    if (listName()) {
+      const listArr = store[listName()]
+      if (typeof listArr === 'object') {
+        return listArr.map((n: string) => `${n}\n`).join('')
+      }
     }
     return ''
   }
 
   return (
     <>
-      <h3>Names in a Quantum Superposition</h3>
+      <h3>Quantum Spinner</h3>
       <div class="animation-container">
         {!gameOver() ?
           availList().map((item: any, i: number) => { return <h1 class={`name animation${i % 4 + 1}`}>{item}</h1> }) :
@@ -50,17 +53,9 @@ function App() {
         <h1 id="selectedName" class={`name animation-select`}>{pName()}</h1>
       </div>
 
-      <p style={`display:${gameOver() ? "block" : "none"}`}>Setup a list of names (one name per line), then name the list and click <strong>[new]</strong>. Next click <em>start ...</em></p>
       <div class="setupform" style={`display:${gameOver() ? "flex" : "none"}`}>
-        <textarea id="srcNames" onChange={(e)=>{
-          e.stopPropagation()
-          e.preventDefault()
-          const names = e.target.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
-          setStore(listName(), names)
-        }} >
-          {textListFromStore()}
-        </textarea>
         <div class="vertical">
+          <p>Team names</p>
           {Object.keys(store).map((k) => <div>
             <button
               class={k === listName() ? "selected" : ""}
@@ -74,42 +69,63 @@ function App() {
               }}>{k ? k : "un-named-list"}</button>
 
             <button style="color:red" onClick={() => {
-              setStore(k, undefined)
-              if (k === listName()) {
-                setListName(Object.keys(store)[0])
-                const srcNamesEle = document.getElementById('srcNames')
-                if (srcNamesEle) {
-                  (srcNamesEle as HTMLInputElement).value = textListFromStore()
+              if (window.confirm("Just checking, OK to delete?")) {
+                setStore(k, undefined)
+                if (k === listName()) {
+                  setListName(Object.keys(store)[0] ?? "")
+                  const srcNamesEle = document.getElementById('srcNames')
+                  if (srcNamesEle) {
+                    (srcNamesEle as HTMLInputElement).value = textListFromStore()
+                  }
                 }
               }
             }}
             >
               X</button> </div>)}
 
-          <div><input id="newListName" value="" placeholder="name a new list"></input>
-            <button onClick={() => {
+          <div><input id="newListName" value="" onInput={(e) => setNewListName(e.target.value)} placeholder="new team name"></input>
+            {newListName() !== "" ? <button onClick={() => {
               const newListNameEle: any = document.getElementById('newListName')
-              const namesEle: any = document.getElementById('srcNames')
-              if (newListNameEle && namesEle) {
-                const names = namesEle?.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
-                setStore(newListNameEle.value, names)
-                setListName(newListNameEle.value)
-                newListNameEle.value = ''
+              if (newListNameEle) {
+                setStore(newListNameEle.value, [])
               }
+              console.log("setListName(newListNameEle.value)", newListNameEle.value)
+              setListName(newListNameEle.value)
+              newListNameEle.value = ''
+              setNewListName('')
             }}
-            >new</button></div></div>
-        <button
-          onClick={() => {
-            const namesEle: any = document.getElementById('srcNames')
-            if (namesEle) {
-              const names = namesEle?.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
-              setAvailList(names)
+            >create</button> : null}
+          </div>
+        </div>
+        {listName() ?
+          <div class="vertical">
+            <p>Team members<br />(one name per line)</p>
+            <textarea id="srcNames" onChange={(e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              const names = e.target.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
               setStore(listName(), names)
-              setComplete([])
-              setPName('')
-            }
-          }
-          }>&gt; start entangling particles &gt;</button>
+            }} >
+              {textListFromStore()}
+            </textarea>
+          </div> : null
+        }
+        {listName() ?
+          <div class="vertical">
+            <p>click <em>spin</em> to begin</p>
+            <button
+              onClick={() => {
+                const namesEle: any = document.getElementById('srcNames')
+                if (namesEle) {
+                  const names = namesEle?.value.split(/\s*\n\s*/).filter((i: string) => i.length > 0)
+                  setAvailList(names)
+                  setStore(listName(), names)
+                  setComplete([])
+                  setPName('')
+                }
+              }
+              }>&gt; spin &gt;</button>
+          </div> : null}
       </div>
 
 
@@ -141,7 +157,7 @@ function App() {
               }, 50)
             }
           }}>
-          {!availList().length ? Math.random() > 0.5 ? "jump to one of many worlds" : "check if quantum cats live forever" : count() % 3 === 0 ? 'collapse the wave function Ψ' : count() % 3 === 1 ? 'make a measurment of Ψ' : 'observe the quantum state |⟩'}
+          {!availList().length ? Math.random() > 0.5 ? "spin down and go back to the ground state" : "back to classical physics" : count() % 3 === 0 ? 'pluck a name out of the quantum soup' : count() % 3 === 1 ? 'collapse the wave function Ψ to get the next name' : 'observe the next name in the quantum state |⟩'}
         </button>
         <div class="name-columns" >
           <div class="name-list">
