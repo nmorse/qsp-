@@ -1,5 +1,5 @@
 const cacheName = "qspCache"
-const precachedResources = ["/", "/index.html", "/assets/index-a9145643.css", "/assets/index-7edcd655.js"];
+const precachedResources = ["/", "/index.html", "/assets/index-a9145643.css", "/assets/index-571dabb8.js"];
 
 async function precache() {
     const cache = await caches.open(cacheName);

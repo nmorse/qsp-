@@ -93,6 +93,8 @@ function App() {
               setListName(newListNameEle.value)
               newListNameEle.value = ''
               setNewListName('')
+              const srcNameEle: any = document.getElementById('srcNames')
+              srcNameEle.innerText = ''
             }}
             >create team</button> : null
           }
