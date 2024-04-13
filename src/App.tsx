@@ -83,8 +83,8 @@ function App() {
             >
               X</button> </div>)}
 
-          <div><input id="newListName" value="" onInput={(e) => setNewListName(e.target.value)} placeholder="new team name"></input>
-            {newListName() !== "" ? <button onClick={() => {
+          <input style={{'margin-top': '20px'}} id="newListName" value="" onInput={(e) => setNewListName(e.target.value)} placeholder="new team name"></input>
+          {newListName() !== "" ? <button onClick={() => {
               const newListNameEle: any = document.getElementById('newListName')
               if (newListNameEle) {
                 setStore(newListNameEle.value, [])
@@ -94,8 +94,8 @@ function App() {
               newListNameEle.value = ''
               setNewListName('')
             }}
-            >create</button> : null}
-          </div>
+            >create team</button> : null
+          }
         </div>
         {listName() ?
           <div class="vertical">
