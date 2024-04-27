@@ -43,6 +43,40 @@ function App() {
     return ''
   }
 
+  const clickNextName = () => {
+    const sn = document.getElementById('selectedName')
+    if (sn) {
+      sn.style.animation = 'none'
+    }
+    setPName("")
+    const av = availList()
+    if (av.length) {
+      const ri = Math.floor(Math.random() * av.length)
+      const randomName = av.slice(ri, ri + 1)[0]
+      setPName(() => randomName)
+      setAvailList((o) => {
+        const i = (o.findIndex((name) => name === randomName))
+        return o.slice(0, i).concat(o.slice(i + 1))
+      })
+      setCount((count) => count + 1)
+      setComplete((o) => o.concat([randomName]))
+      setTimeout(() => {
+        if (sn) {
+          sn.style.animation = "1s ease-out nameAnimationSelect"
+          sn.style.animationFillMode = "forwards"
+          sn.className = 'name animation-select'
+        }
+      }, 50)
+    }
+  }
+
+  const clickCancelList = () => {
+    setPName("")
+    setAvailList(() => {
+      return []
+    })
+  }
+
   return (
     <>
       <h3>Quantum Spinner</h3>
@@ -55,7 +89,7 @@ function App() {
 
       <div class="setupform" style={`display:${gameOver() ? "flex" : "none"}`}>
         <div class="vertical">
-          <p>Team names</p>
+          <p>(1) Name Teams</p>
           {Object.keys(store).map((k) => <div>
             <button
               class={k === listName() ? "selected" : ""}
@@ -101,7 +135,7 @@ function App() {
         </div>
         {listName() ?
           <div class="vertical">
-            <p>Team members<br />(one name per line)</p>
+            <p>(2) Roll Call<br />(enter one name per line)</p>
             <textarea id="srcNames" onChange={(e) => {
               e.stopPropagation()
               e.preventDefault()
@@ -114,7 +148,7 @@ function App() {
         }
         {listName() ?
           <div class="vertical">
-            <p>click <em>spin</em> to begin</p>
+            <p>(3) Click <em>spin</em> to begin</p>
             <button
               onClick={() => {
                 const namesEle: any = document.getElementById('srcNames')
@@ -131,36 +165,14 @@ function App() {
       </div>
 
 
-      <div class="card">
-        <button style={`display:${!gameOver() ? "block" : "none"}`}
-          onClick={() => {
-            const sn = document.getElementById('selectedName')
-            if (sn) {
-              sn.style.animation = 'none'
-            }
-            setPName("")
-            const av = availList()
-            if (av.length) {
-              const ri = Math.floor(Math.random() * av.length)
-              const randomName = av.slice(ri, ri + 1)[0]
-              setPName(() => randomName)
-              setAvailList((o) => {
-                const i = (o.findIndex((name) => name === randomName))
-                return o.slice(0, i).concat(o.slice(i + 1))
-              })
-              setCount((count) => count + 1)
-              setComplete((o) => o.concat([randomName]))
-              setTimeout(() => {
-                if (sn) {
-                  sn.style.animation = "1s ease-out nameAnimationSelect"
-                  sn.style.animationFillMode = "forwards"
-                  sn.className = 'name animation-select'
-                }
-              }, 50)
-            }
-          }}>
+      <div style={`display:${!gameOver() ? "block" : "none"}`} class="card">
+        <button 
+          onClick={clickNextName}>
           {!availList().length ? Math.random() > 0.5 ? "spin down and go back to the ground state" : "back to classical physics" : count() % 3 === 0 ? 'pluck a name out of the quantum soup' : count() % 3 === 1 ? 'collapse the wave function Ψ to get the next name' : 'observe the next name in the quantum state |⟩'}
         </button>
+        <button onClick={clickCancelList}> X </button>
+      </div>
+      <div class="card">
         <div class="name-columns" >
           <div class="name-list">
             <div style="color:#999">still in superposition:</div>

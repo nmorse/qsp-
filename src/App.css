@@ -2,7 +2,6 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
 .logo {
@@ -52,7 +51,8 @@ input {
 }
 
 button.selected {
-  background-color: #888;
+  background-color: #ae8e7b;
+  border: solid 3px rgb(99, 69, 105)
 }
 
 body {
